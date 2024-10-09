@@ -1,0 +1,85 @@
+version: "3.8"
+
+services:
+    nginx:
+        image: nginx:alpine
+        container_name: covid-vaccine-nginx
+        restart: unless-stopped
+        ports:
+            - 8070:80
+            - 4431:443
+        volumes:
+            - ./:/var/www/html:cached
+            - ./.docker/nginx:/etc/nginx/conf.d
+            - ./.docker/nginx/ssl:/etc/nginx/conf.d/ssl
+        networks:
+            - covid-vaccine-network
+        depends_on:
+            - app
+            - phpmyadmin    # Add the phpmyadmin service as a dependency
+
+    app:
+        build:
+            context: ./.docker/app
+            dockerfile: Dockerfile
+        container_name: covid-vaccine-app
+        restart: unless-stopped
+        working_dir: /var/www/html
+        volumes:
+            - ./:/var/www/html:cached
+            - ./.docker/app/php-fpm.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ~/.ssh:/root/.ssh
+        networks:
+            - covid-vaccine-network
+        depends_on:
+            - db
+            - redis
+
+    db:
+        image: mysql:8.0.23
+        container_name: covid-vaccine-mysql-db
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "3309:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: Uhtkjf75rbT8e3
+            MYSQL_DATABASE: covid_vaccine
+            SERVICE_TAGS: dev
+            SERVICE_NAME: db
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_AUTHENTICATION_PLUGIN: 'mysql_native_password'
+        volumes:
+            - covid-vaccine-volume:/var/lib/mysql
+        networks:
+            - covid-vaccine-network
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: covid-vaccine-phpmyadmin
+        ports:
+            - "8071:80"   # Map port 8080 on the host to port 80 on the container
+        environment:
+            PMA_HOST: db
+            MYSQL_ROOT_PASSWORD: Uhtkjf75rbT8e3
+        depends_on:
+            - db
+        networks:
+            - covid-vaccine-network
+
+    redis:
+        image: redis:alpine
+        container_name: covid-vaccine-redis
+        volumes:
+            - covid-vaccine-volume:/data
+        networks:
+            - covid-vaccine-network
+
+networks:
+    covid-vaccine-network:
+        driver: bridge
+
+volumes:
+    covid-vaccine-volume:
+        driver: local
+
