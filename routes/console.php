@@ -10,3 +10,6 @@ Artisan::command('inspire', function () {
 
 
 Schedule::command('send:vaccination-reminders')->dailyAt('21:00');
+
+// Schedule the vaccination job dispatcher to run every day at midnight
+Schedule::command('vaccination:schedule')->dailyAt('00:00');

@@ -75,7 +75,7 @@ class VaccinationController extends Controller
                 ]);
 
                 // Send email notification
-                Mail::to($user->email)->send(new VaccinationScheduled($vaccinationDate));
+                //Mail::to($user->email)->send(new VaccinationScheduled($vaccinationDate));
             }
         }
     }

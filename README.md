@@ -10,6 +10,7 @@ This is a **COVID-19 Vaccine Registration System** built using **Laravel**. It a
 - **Scheduled Vaccination**: Vaccinations are scheduled based on the first-come-first-serve principle, ensuring users get scheduled dates according to available slots.
 - **Email Notifications**: Automated email reminders are sent to users before their scheduled vaccination date. Emails can be tested using **Mailtrap**.
 - **SMS Notifications**: SMS notifications are sent via Twilio (or similar services) to remind users of their scheduled vaccination date.
+- **Observer Design Pattern for Notifications**: The application follows the **Observer Design Pattern** to handle email and SMS notifications, ensuring that notifications are sent when certain events (like scheduling a vaccination) are triggered.
 - **Service-Repository Structure**: The project follows a clean architecture where the controller calls the service, and the service interacts with the repository for database operations.
 - **phpMyAdmin**: Included for easy database management via a browser.
 - **Redis**: Utilized for caching and queue management.
@@ -24,6 +25,20 @@ This is a **COVID-19 Vaccine Registration System** built using **Laravel**. It a
 - **Bootstrap 5** for the frontend.
 - **Vite** for asset bundling and front-end tooling.
 - **Docker** for containerized development.
+
+## Video Tutorials
+
+### 1. Setup Video
+
+Watch this video to understand the full **setup process** of the COVID-19 Vaccine Registration System using Docker:
+
+[**Setup Video**](https://www.example.com/setup-video-url)
+
+### 2. Feature Demonstration Video
+
+Watch this video to see the complete **feature demonstration** of the COVID-19 Vaccine Registration System, including user registration, status checking, and notifications:
+
+[**Feature Demonstration Video**](https://www.example.com/feature-demo-video-url)
 
 ## Setup Guide
 
@@ -204,6 +219,10 @@ docker exec -it covid-vaccine-app php artisan queue:work
 
 ## Code Overview
 
+### Observer Design Pattern for Notifications
+
+The system uses the **Observer Design Pattern** to handle the notifications. When events such as user registration or scheduling occur, the observers trigger the appropriate notifications (email and SMS) to be sent to the users. This ensures that the notification system is decoupled and easily extendable.
+
 ### Service-Repository Pattern
 
 - **Controllers**: Each controller interacts with a service layer, ensuring separation of concerns.
@@ -222,7 +241,9 @@ docker exec -it covid-vaccine-app php artisan queue:work
 
 ### Models
 
-- **User**: Represents users who register for vaccination.
+- **
+
+User**: Represents users who register for vaccination.
 - **VaccineCenter**: Represents vaccination centers.
 - **Vaccination**: Represents vaccination records and scheduled dates for users.
 
@@ -240,3 +261,7 @@ docker exec -it covid-vaccine-app php artisan queue:work
 ## License
 
 This project is open-source and available under the [MIT license](https://opensource.org/licenses/MIT).
+
+---
+
+By following this README, you should be able to set up and run the **COVID-19 Vaccine Registration System** with **Docker**, **nginx**, **phpMyAdmin**, and **Redis**. If you encounter any issues during the setup or have questions, feel free to reach out via GitHub issues or contribute by submitting a pull request.
