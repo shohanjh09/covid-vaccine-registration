@@ -9,7 +9,7 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 
-Schedule::command('send:vaccination-reminders')->dailyAt('21:00');
+Schedule::command('vaccination:reminders')->dailyAt('21:00');
 
 // Schedule the vaccination job dispatcher to run every day at midnight
 Schedule::command('vaccination:schedule')->dailyAt('00:00');

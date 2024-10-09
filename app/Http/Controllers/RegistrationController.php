@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ScheduleVaccinationJob;
 use App\Models\User;
-use App\Models\Vaccination;
 use App\Models\VaccineCenter;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Bus; // Facade for dispatching batch jobs
-use App\Jobs\ScheduleVaccinationJob; // The job to handle scheduling
 
 class RegistrationController extends Controller
 {
@@ -19,6 +17,7 @@ class RegistrationController extends Controller
     public function showRegistrationForm()
     {
         // Retrieve all vaccine centers to display in the registration form
+        //TODO:// get all the active vaccine center
         $vaccineCenters = VaccineCenter::all();
         return view('registration.register', compact('vaccineCenters'));
     }
@@ -45,10 +44,6 @@ class RegistrationController extends Controller
             'email' => $validatedData['email'],
             'nid' => $validatedData['nid'],
         ]);
-
-        // Dispatch the job to schedule the vaccination
-        // It runs in the background and assigns the next available date
-        dispatch(new ScheduleVaccinationJob($user->id, $validatedData['vaccine_center_id']));
 
         // Redirect to the search page with a success message
         return redirect()->route('search')->with('success', 'You have successfully registered for vaccination. The vaccination date will be assigned soon.');

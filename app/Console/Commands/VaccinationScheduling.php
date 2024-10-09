@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use App\Models\User;
 use App\Jobs\ScheduleVaccinationJob;
 
-class DispatchVaccinationScheduling extends Command
+class VaccinationScheduling extends Command
 {
     // The name and signature of the console command
     protected $signature = 'vaccination:schedule';
@@ -22,7 +22,7 @@ class DispatchVaccinationScheduling extends Command
 
         foreach ($unscheduledUsers as $user) {
             // Dispatch the ScheduleVaccinationJob for each unscheduled user
-            dispatch(new ScheduleVaccinationJob($user->id, $user->vaccine_center_id));
+            dispatch(new ScheduleVaccinationJob($user->id));
         }
 
         $this->info('Vaccination scheduling jobs have been dispatched successfully.');
