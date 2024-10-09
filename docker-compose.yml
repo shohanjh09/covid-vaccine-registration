@@ -9,7 +9,7 @@ services:
             - 8070:80
             - 4431:443
         volumes:
-            - ./:/var/www/html:cached
+            - ./:/var/www/html
             - ./.docker/nginx:/etc/nginx/conf.d
             - ./.docker/nginx/ssl:/etc/nginx/conf.d/ssl
         networks:
@@ -26,7 +26,7 @@ services:
         restart: unless-stopped
         working_dir: /var/www/html
         volumes:
-            - ./:/var/www/html:cached
+            - ./:/var/www/html
             - ./.docker/app/php-fpm.ini:/usr/local/etc/php/conf.d/custom.ini
             - ~/.ssh:/root/.ssh
         networks:
