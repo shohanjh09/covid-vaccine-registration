@@ -1,26 +1,38 @@
 @extends('layouts.app')
 
-@section('title', 'Vaccination Status')
+@section('title', 'Check Vaccination Status')
 
 @section('content')
-    <h1>Check Vaccination Status</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h3>Check Your Vaccination Status</h3>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('search.status') }}" method="GET">
+                        <div class="form-group">
+                            <label for="nid">Enter Your National ID (NID)</label>
+                            <input type="text" name="nid" id="nid" class="form-control" placeholder="Enter your NID" required>
+                        </div>
 
-    <form action="{{ route('search') }}" method="GET">
-        <label for="nid">Enter Your NID:</label>
-        <input type="text" name="nid" id="nid" required>
-        <button type="submit">Search</button>
-    </form>
+                        <button type="submit" class="btn btn-primary btn-block">Check Status</button>
+                    </form>
 
-    @if(isset($status))
-        <div>
-            <h2>Status: {{ $status }}</h2>
-            @if($status == 'Scheduled')
-                <p>Your vaccination is scheduled for {{ $scheduledDate }}.</p>
-            @elseif($status == 'Not registered')
-                <p>You are not registered yet. <a href="{{ route('register') }}">Register here</a>.</p>
-            @elseif($status == 'Vaccinated')
-                <p>You have already been vaccinated on {{ $vaccinatedDate }}.</p>
-            @endif
+                    @if(isset($status))
+                        <div class="mt-4 alert alert-info text-center">
+                            <h4>Status: {{ $status }}</h4>
+                            @if($status == 'Scheduled')
+                                <p>Your vaccination is scheduled for {{ $scheduledDate }}.</p>
+                            @elseif($status == 'Not registered')
+                                <p>You are not registered yet. <a href="{{ route('register') }}" class="btn btn-link">Register here</a>.</p>
+                            @elseif($status == 'Vaccinated')
+                                <p>You have already been vaccinated on {{ $vaccinatedDate }}.</p>
+                            @endif
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
-    @endif
+    </div>
 @endsection

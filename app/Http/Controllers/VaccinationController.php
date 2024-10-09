@@ -10,6 +10,53 @@ use Illuminate\Support\Facades\Mail;
 
 class VaccinationController extends Controller
 {
+
+    /**
+     * Show the form to search for vaccination status.
+     */
+    public function showSearchForm()
+    {
+        return view('search.status');
+    }
+
+    /**
+     * Search for the vaccination status by NID.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function search(Request $request)
+    {
+        $request->validate([
+            'nid' => 'required',
+        ]);
+
+        // Find user by NID
+        $user = User::where('nid', $request->nid)->first();
+
+        if (!$user) {
+            return view('search.status', ['status' => 'Not registered']);
+        }
+
+        // Fetch the user's vaccination status
+        $vaccination = $user->vaccination;
+
+        if (!$vaccination) {
+            return view('search.status', ['status' => 'Not scheduled']);
+        }
+
+        if ($vaccination->scheduled_date > now()) {
+            return view('search.status', [
+                'status' => 'Scheduled',
+                'scheduledDate' => $vaccination->scheduled_date
+            ]);
+        }
+
+        return view('search.status', [
+            'status' => 'Vaccinated',
+            'vaccinatedDate' => $vaccination->scheduled_date
+        ]);
+    }
+
     public function schedule()
     {
         // Fetch unvaccinated users and vaccine centers
@@ -32,28 +79,6 @@ class VaccinationController extends Controller
             }
         }
     }
-
-    public function search(Request $request)
-    {
-        $user = User::where('nid', $request->nid)->first();
-
-        if (!$user) {
-            return view('search', ['status' => 'Not registered']);
-        }
-
-        $vaccination = $user->vaccination;
-
-        if (!$vaccination) {
-            return view('search', ['status' => 'Not scheduled']);
-        }
-
-        if ($vaccination->scheduled_date > now()) {
-            return view('search', ['status' => 'Scheduled', 'date' => $vaccination->scheduled_date]);
-        }
-
-        return view('search', ['status' => 'Vaccinated']);
-    }
-
 
     private function findAvailableCenter($vaccineCenters)
     {
