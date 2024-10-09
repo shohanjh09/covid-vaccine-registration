@@ -12,9 +12,17 @@ class VaccineCenterSeeder extends Seeder
      */
     public function run(): void
     {
-        VaccineCenter::create([
-            ['name' => 'Center 1', 'daily_capacity' => 100],
-            ['name' => 'Center 2', 'daily_capacity' => 150],
+        // Use insert() for multiple records
+        VaccineCenter::insert([
+            ['name' => 'Bangladesh Kuwait Moitree Hospital', 'location' => 'Dhaka', 'daily_capacity' => 100],
+            ['name' => 'Railway Hospital', 'location' => 'Dhaka', 'daily_capacity' => 150],
+            ['name' => 'Mohanagar General Hospital', 'location' => 'Dhaka', 'daily_capacity' => 120],
+            ['name' => 'Mirpur Lalkuthi Hospital', 'location' => 'Dhaka', 'daily_capacity' => 150],
+            ['name' => 'Kurmitola General Hospital', 'location' => 'Dhaka', 'daily_capacity' => 140],
+            ['name' => 'shohidsamsuddinahmed Hospital', 'location' => 'Sylhet', 'daily_capacity' => 130],
+            ['name' => 'sonkramokbyadhi Hospital', 'location' => 'Sylhet', 'daily_capacity' => 110],
+            ['name' => 'AdhunikSadar Hospital', 'location' => 'Rangpur', 'daily_capacity' => 120],
+            ['name' => 'Sadar Hospital', 'location' => 'Jhenaidah', 'daily_capacity' => 100],
         ]);
     }
 }

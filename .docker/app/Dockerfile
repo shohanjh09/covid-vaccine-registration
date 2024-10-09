@@ -4,7 +4,7 @@ MAINTAINER Shohanur Rahman <shohan.nsu.cse@gmail.com>
 # Define the build argument for PHP extension dependencies
 ARG PHPIZE_DEPS="autoconf curl g++ gcc libtool make"
 
-ENV PECL_EXTENSIONS="pcov psr redis xdebug"
+ENV PECL_EXTENSIONS="pcov redis xdebug"
 ENV PHP_EXTENSIONS="bz2 exif gd gettext intl pcntl pdo_mysql zip"
 
 # Install system dependencies and linux-headers

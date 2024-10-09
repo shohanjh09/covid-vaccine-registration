@@ -21,6 +21,7 @@ class VaccineCenter extends Model
      */
     protected $fillable = [
         'name',
+        'location',
         'daily_capacity',
     ];
 
