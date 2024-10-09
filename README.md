@@ -1,66 +1,242 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# COVID-19 Vaccine Registration System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is a **COVID-19 Vaccine Registration System** built using **Laravel**. It allows users to register for vaccination, select a vaccine center, and check their registration status. The system includes automated notifications for vaccination schedules, both via email and SMS (Twilio or similar integration), and follows a clean, modern design.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **User Registration**: Users can register for vaccination by providing their full name, email, NID (National ID), and selecting a vaccination center.
+- **Vaccine Center Selection**: Users can select a vaccine center from a pre-populated list.
+- **Check Vaccination Status**: Users can enter their NID to check their registration and vaccination status. The system provides various statuses such as "Not Registered," "Scheduled," and "Vaccinated."
+- **Scheduled Vaccination**: Vaccinations are scheduled based on the first-come-first-serve principle, ensuring users get scheduled dates according to available slots.
+- **Email Notifications**: Automated email reminders are sent to users before their scheduled vaccination date. Emails can be tested using **Mailtrap**.
+- **SMS Notifications**: SMS notifications are sent via Twilio (or similar services) to remind users of their scheduled vaccination date.
+- **Service-Repository Structure**: The project follows a clean architecture where the controller calls the service, and the service interacts with the repository for database operations.
+- **phpMyAdmin**: Included for easy database management via a browser.
+- **Redis**: Utilized for caching and queue management.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tech Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Laravel (latest version)**
+- **nginx** for serving the Laravel application.
+- **MySQL** for database management.
+- **phpMyAdmin** for managing the database via a web interface.
+- **Redis** for caching and queue management.
+- **Bootstrap 5** for the frontend.
+- **Vite** for asset bundling and front-end tooling.
+- **Docker** for containerized development.
 
-## Learning Laravel
+## Setup Guide
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Requirements
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Before setting up the project, make sure you have the following installed:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Docker**
+- **Docker Compose**
+- **Git**
 
-## Laravel Sponsors
+### Step 1: Clone the Repository
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Clone the repository to your local machine:
 
-### Premium Partners
+```bash
+git clone https://github.com/your-repo/covid-vaccine-registration.git
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Step 2: Navigate to the Project Directory
 
-## Contributing
+```bash
+cd covid-vaccine-registration
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Step 3: Setup Environment
 
-## Code of Conduct
+Copy the `.env.example` file to create your `.env` file:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+cp .env.example .env
+```
 
-## Security Vulnerabilities
+Modify the `.env` file with the following values for Docker, MySQL, and Twilio:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=covid_vaccine
+DB_USERNAME=root
+DB_PASSWORD=Uhtkjf75rbT8e3
+
+# Twilio SMS credentials
+TWILIO_SID=your_twilio_sid
+TWILIO_AUTH_TOKEN=your_twilio_auth_token
+TWILIO_SMS_FROM=your_twilio_phone_number
+
+# Email settings (use your preferred email service)
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_mailtrap_username
+MAIL_PASSWORD=your_mailtrap_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="noreply@vaccine-system.com"
+MAIL_FROM_NAME="${APP_NAME}"
+
+# Optional - Set your preferred port for the application
+APP_PORT=8070
+```
+
+### Step 4: Docker Setup
+
+The application is containerized with **nginx**, **MySQL**, **phpMyAdmin**, **Redis**, and the Laravel application itself.
+
+#### Step 4.1: Build and Start the Docker Containers
+
+Run the following command to build and start your Docker containers:
+
+```bash
+docker-compose up --build
+```
+
+This will start the **nginx** server, **Laravel application**, **MySQL database**, **phpMyAdmin**, and **Redis** containers.
+
+### Step 5: Composer Install and Key Generation
+
+1. **Run Composer Install** inside the Docker container to install all the Laravel dependencies:
+
+```bash
+docker exec -it covid-vaccine-app composer install
+```
+
+2. **Generate the Laravel Application Key**:
+
+```bash
+docker exec -it covid-vaccine-app php artisan key:generate
+```
+
+### Step 6: Run Migrations and Seed Vaccine Centers
+
+Once your containers are up and running, you need to set up the database.
+
+1. **Run migrations** to create the necessary database tables:
+
+```bash
+docker exec -it covid-vaccine-app php artisan migrate
+```
+
+2. **Seed the database** with some initial vaccine centers:
+
+```bash
+docker exec -it covid-vaccine-app php artisan db:seed --class=VaccineCenterSeeder
+```
+
+### Step 7: Cache, Config, and Route Clear (Optional)
+
+If needed, you can clear cached data for the application using the following commands:
+
+```bash
+docker exec -it covid-vaccine-app php artisan config:clear
+docker exec -it covid-vaccine-app php artisan cache:clear
+docker exec -it covid-vaccine-app php artisan route:clear
+```
+
+### Step 8: Compile Assets with Vite
+
+To compile the front-end assets (CSS and JS), run the following command inside the Docker container:
+
+```bash
+docker exec -it covid-vaccine-app npm run dev
+```
+
+For production builds:
+
+```bash
+docker exec -it covid-vaccine-app npm run build
+```
+
+### Step 9: Access the Application
+
+Once everything is set up, you can access the application and services in your browser:
+
+- **Application**: [http://localhost:8070](http://localhost:8070)
+- **phpMyAdmin**: [http://localhost:8071](http://localhost:8071)
+
+The **phpMyAdmin** interface allows you to easily manage your MySQL database via a web browser. Use the following credentials:
+
+- Username: `root`
+- Password: `Uhtkjf75rbT8e3`
+
+### Step 10: Using Redis for Caching and Queues
+
+This application uses **Redis** for caching and queue management. Ensure that Redis is running as part of the Docker setup. You can monitor the status of the queues and Redis by using Laravel's built-in commands.
+
+Run the following to start processing jobs:
+
+```bash
+docker exec -it covid-vaccine-app php artisan queue:work
+```
+
+## Email and SMS Notifications Testing
+
+- **Email Notifications**: You can test email notifications using **Mailtrap**, a service for safely testing emails during development.
+
+  To test:
+    - Set up a Mailtrap account and add your **username** and **password** in the `.env` file under the mail configuration.
+    - Mailtrap allows you to view emails sent by the application in a sandbox environment.
+
+- **SMS Notifications**: SMS notifications are sent using **Twilio**. Make sure you configure the Twilio API credentials in the `.env` file. If using the **Twilio test credentials**, messages will be simulated.
+
+## Testing
+
+1. **Unit and Feature Testing**:
+    - Run Laravel’s built-in tests to ensure the application works as expected.
+    - Use the following command to run all the tests:
+
+   ```bash
+   docker exec -it covid-vaccine-app php artisan test
+   ```
+
+2. **Manual Testing**:
+    - **User Registration**: Test user registration by visiting the registration page, submitting a valid form, and ensuring that users are added to the database.
+    - **Vaccination Status**: Test the vaccination status feature by submitting a valid NID and verifying the displayed status.
+    - **Email Notifications**: Use **Mailtrap** to verify that reminder emails are being sent before scheduled vaccination dates.
+    - **SMS Notifications**: Use **Twilio** or a similar service to verify SMS notifications.
+
+## Code Overview
+
+### Service-Repository Pattern
+
+- **Controllers**: Each controller interacts with a service layer, ensuring separation of concerns.
+- **Services**: Handle business logic. Controllers call these services, which then interact with repositories.
+- **Repositories**: Handle all database interactions. Services delegate data access to repositories, keeping the application flexible and testable.
+
+### Notifications
+
+- **Email Notifications**: Sent to users the night before their scheduled vaccination date via Laravel’s notification system.
+- **SMS Notifications**: Sent via Twilio (or other SMS providers) to remind users of their vaccination date.
+
+### Controllers
+
+- **RegistrationController**: Handles user registration and scheduling of vaccination.
+- **VaccinationController**: Handles the logic for checking vaccination status.
+
+### Models
+
+- **User**: Represents users who register for vaccination.
+- **VaccineCenter**: Represents vaccination centers.
+- **Vaccination**: Represents vaccination records and scheduled dates for users.
+
+### Views
+
+- **layouts/app.blade.php**: Base layout with navigation and footer.
+- **registration/register.blade.php**: Form for registering users for vaccination.
+- **search/status.blade.php**: Page for checking vaccination status.
+
+## Future Improvements
+
+- **Admin Panel**: Add admin functionality for managing vaccine centers.
+- **Multi-language Support**: Add support for multiple languages for a better user experience.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-source and available under the [MIT license](https://opensource.org/licenses/MIT).

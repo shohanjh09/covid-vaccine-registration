@@ -6,7 +6,7 @@ use App\Http\Controllers\VaccinationController;
 
 // Home route (optional)
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
 // Registration route
