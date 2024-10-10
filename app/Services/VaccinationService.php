@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Models\Vaccination;
 use App\Models\VaccineCenter;
 use App\Models\VaccineCenterCapacity;
+use App\Repositories\UserRepositoryInterface;
+use App\Repositories\VaccineCenterCapacityRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -13,15 +15,31 @@ use Illuminate\Support\Facades\Log;
 class VaccinationService implements VaccinationServiceInterface
 {
     /**
+     * @var VaccineCenterCapacityRepositoryInterface
+     */
+    protected VaccineCenterCapacityRepositoryInterface $vaccineCenterRepository;
+
+    /**
+     * @var UserRepositoryInterface
+     */
+    protected UserRepositoryInterface $userRepository;
+
+    public function __construct(VaccineCenterCapacityRepositoryInterface $vaccineCenterRepository,
+                                UserRepositoryInterface                  $userRepository)
+    {
+        $this->vaccineCenterRepository = $vaccineCenterRepository;
+        $this->userRepository = $userRepository;
+    }
+
+    /**
      * @inheritDoc
      */
-    public function getVaccinationStatus(string $nid): array
+    public function getVaccinationStatus(int $nid): array
     {
-        // Find the user by NID
-        $user = User::where('nid', $nid)->first();
-
+        // update this method code
+        $user = $this->userRepository->getUserByNid($nid);
         if (!$user) {
-            return ['status' => 'Not registered'];
+            return ['status' => 'User not found'];
         }
 
         // Fetch the user's vaccination status

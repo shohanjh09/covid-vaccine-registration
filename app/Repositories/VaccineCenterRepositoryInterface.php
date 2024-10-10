@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Collection;
 interface VaccineCenterRepositoryInterface extends Repository
 {
     /**
-     * Get all the active vaccine center
+     * Get all active vaccine centers
+     *
      * @return Collection
      */
     public function getActiveVaccineCenters() : Collection;

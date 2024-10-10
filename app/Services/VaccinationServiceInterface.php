@@ -7,10 +7,10 @@ interface VaccinationServiceInterface
     /**
      * Get the vaccination status of a user based on their NID.
      *
-     * @param string $nid
+     * @param int $nid
      * @return array
      */
-    public function getVaccinationStatus(string $nid): array;
+    public function getVaccinationStatus(int $nid): array;
 
     /**
      * Set a vaccination date for a user

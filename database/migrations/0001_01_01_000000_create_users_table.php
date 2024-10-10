@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('nid')->unique();
+            $table->foreignId('vaccine_center_id');
             $table->timestamps();
         });
 

@@ -3,17 +3,17 @@
 namespace App\Repositories;
 
 use App\Models\ModelInterface;
-use App\Models\User;
+use App\Models\Vaccination;
 use Illuminate\Database\Eloquent\Collection;
 
-class UserRepository implements UserRepositoryInterface
+class VaccinationRepository implements VaccinationRepositoryInterface
 {
     /**
-     * @var User
+     * @var Vaccination
      */
-    protected User $model;
+    protected Vaccination $model;
 
-    public function __construct(User $model) {
+    public function __construct(Vaccination $model) {
         $this->model = $model;
     }
 
@@ -25,6 +25,9 @@ class UserRepository implements UserRepositoryInterface
         return $this->model->firstOrCreate($data);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function delete(int $id): bool {
         return $this->model->destroy($id);
     }
@@ -47,17 +50,9 @@ class UserRepository implements UserRepositoryInterface
      * @inheritDoc
      */
     public function update(int $id, array $data): ?ModelInterface {
-        $user = $this->model->find($id);
-        $user->update($data);
+        $vaccineCenter = $this->model->find($id);
+        $vaccineCenter->update($data);
 
-        return $user;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getUserByNid(int $nid): mixed
-    {
-        return $this->model->where('nid', $nid)->first();
+        return $vaccineCenter;
     }
 }

@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
-use App\Models\VaccineCenter;
 use App\Repositories\UserRepositoryInterface;
-use App\Repositories\VaccineCenterRepository;
 use App\Repositories\VaccineCenterRepositoryInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -38,10 +36,8 @@ class RegistrationController extends Controller
      */
     public function showRegistrationForm(): View
     {
-        // Retrieve all vaccine centers to display in the registration form
-        //TODO:// get all the active vaccine center
-        $vaccineCenters = VaccineCenter::all();
-        $vaccineCenters = $this->vaccineCenterRepository->getAll()
+        $vaccineCenters = $this->vaccineCenterRepository->getActiveVaccineCenters();
+
         return view('registration.register', compact('vaccineCenters'));
     }
 

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SearchUserRequest;
 use App\Services\VaccinationServiceInterface;
-use Illuminate\Http\Request;
 
 class VaccinationController extends Controller
 {
@@ -18,17 +18,22 @@ class VaccinationController extends Controller
     }
 
     /**
+     * Show the search form.
+     */
+    public function showSearchForm()
+    {
+        return view('search.search');
+    }
+
+    /**
      * Search for vaccination status by NID.
      */
-    public function search(Request $request)
+    public function search(SearchUserRequest $request)
     {
-        // Validate the NID input
-        $request->validate(['nid' => 'required']);
+        $request = $request->validated();
 
-        // Get the vaccination status from the service
-        $statusData = $this->vaccinationService->getVaccinationStatus($request->nid);
+        $statusData = $this->vaccinationService->getVaccinationStatus((int) $request->nid);
 
-        // Return the appropriate view with the status
         return view('search.status', $statusData);
     }
 }
