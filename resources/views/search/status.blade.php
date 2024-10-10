@@ -10,6 +10,8 @@
                     <h3>Check Your Vaccination Status</h3>
                 </div>
                 <div class="card-body">
+                    @include('components.alert')
+
                     <form action="{{ route('search.status') }}" method="GET">
                         <div class="form-group">
                             <label for="nid">Enter Your National ID (NID)</label>

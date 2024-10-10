@@ -10,6 +10,7 @@
                     <h3>Register for COVID-19 Vaccination</h3>
                 </div>
                 <div class="card-body">
+                    @include('components.error')
                     <form action="{{ route('register') }}" method="POST">
                         @csrf
                         <div class="form-group">

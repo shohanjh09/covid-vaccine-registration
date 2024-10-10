@@ -78,10 +78,10 @@ class VaccinationService implements VaccinationServiceInterface
     /**
      * Find the next available date for vaccination at the selected center.
      *
-     * @param  int  $vaccineCenterId
+     * @param int $vaccineCenterId
      * @return string  The next available vaccination date.
      */
-    private function findNextAvailableDate($vaccineCenterId)
+    private function findNextAvailableDate(int $vaccineCenterId): string
     {
         $date = Carbon::now(); // Start from today's date
 

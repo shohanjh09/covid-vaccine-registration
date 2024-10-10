@@ -17,5 +17,5 @@ interface VaccinationServiceInterface
      * @param int $userId
      * @return void
      */
-    public function setVaccinationScheduleForUser(int $userId) : void
+    public function setVaccinationScheduleForUser(int $userId) : void;
 }

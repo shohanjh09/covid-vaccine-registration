@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('location');
+            $table->boolean('active');
             $table->integer('daily_capacity');
             $table->timestamps();
         });

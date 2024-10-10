@@ -9,6 +9,11 @@ Route::get('/', function () {
     return view('home');
 });
 
+Route::get('/timezone', function () {
+    return now(); // This will return the current time in the set timezone
+});
+
+
 // Registration route
 Route::get('/register', [RegistrationController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegistrationController::class, 'register']);

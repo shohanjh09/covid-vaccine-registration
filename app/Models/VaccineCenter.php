@@ -3,12 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use App\Models\Vaccination;
 
 class VaccineCenter extends Model
 {
-    use HasFactory;
+    const ACTIVE = 1;
 
     protected $table = 'vaccine_centers';
 
@@ -21,6 +19,7 @@ class VaccineCenter extends Model
      */
     protected $fillable = [
         'name',
+        'active',
         'location',
         'daily_capacity',
     ];
