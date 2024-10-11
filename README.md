@@ -109,7 +109,7 @@ Make sure you have the following tools installed:
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/your-repo/covid-vaccine-registration.git
+git clone https://github.com/shohanjh09/covid-vaccine-registration.git
 cd covid-vaccine-registration
 ```
 
