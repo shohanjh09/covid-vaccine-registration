@@ -17,7 +17,6 @@ class Vaccination extends Model
      */
     protected $fillable = [
         'user_id',
-        'vaccination_center_id',
         'scheduled_date',
     ];
 
@@ -27,13 +26,5 @@ class Vaccination extends Model
     public function user() : BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Relationship: A vaccination belongs to a vaccination center.
-     */
-    public function vaccinationCenter() : BelongsTo
-    {
-        return $this->belongsTo(VaccinationCenter::class, 'vaccination_center_id');
     }
 }

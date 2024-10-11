@@ -37,7 +37,7 @@ class User extends Model
     /**
      * Relationship: A user belongs to a vaccine center.
      */
-    public function vaccineCenter(): BelongsTo
+    public function VaccinationCenter(): BelongsTo
     {
         return $this->belongsTo(VaccinationCenter::class, 'vaccination_center_id');
     }

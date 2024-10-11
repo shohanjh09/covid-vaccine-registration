@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Notifications\VaccinationReminder;
 use App\Repositories\VaccinationRepositoryInterface;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
 class VaccinationReminders extends Command
 {
@@ -33,7 +32,7 @@ class VaccinationReminders extends Command
 
         foreach ($vaccinations as $vaccination) {
             $user = $vaccination->user;
-            $vaccinationCenter = $vaccination->vaccinationCenter;
+            $vaccinationCenter = $user->vaccinationCenter;
 
             if ($user) {
                 // Send for notification

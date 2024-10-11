@@ -2,14 +2,14 @@
 
 namespace App\Notifications;
 
+use App\Models\Vaccination;
 use App\Models\VaccinationCenter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
 use NotificationChannels\Twilio\TwilioMessage;
-use App\Models\Vaccination;
 
 class VaccinationReminder extends Notification implements ShouldQueue
 {
@@ -23,7 +23,7 @@ class VaccinationReminder extends Notification implements ShouldQueue
     protected Vaccination $vaccination;
 
     /**
-     * The vaccine center instance.
+     * The vaccination center instance.
      *
      * @var VaccinationCenter
      */
@@ -32,7 +32,6 @@ class VaccinationReminder extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      *
-     * @param VaccinationCenter $vaccineCenter
      * @param Vaccination $vaccination
      * @return void
      */
@@ -87,7 +86,7 @@ class VaccinationReminder extends Notification implements ShouldQueue
     public function toTwilio($notifiable)
     {
         return (new TwilioMessage())
-            ->content('Reminder: Your COVID-19 vaccination is scheduled for ' . $this->vaccination->scheduled_date . ' at ' . $this->vaccination->vaccineCenter->name . '. Please bring your NID.');
+            ->content('Reminder: Your COVID-19 vaccination is scheduled for ' . $this->vaccination->scheduled_date . ' at ' . $this->vaccineCenter->name . '. Please bring your NID.');
     }
 
     /**
