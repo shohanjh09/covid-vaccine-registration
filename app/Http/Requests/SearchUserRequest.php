@@ -23,7 +23,7 @@ class SearchUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nid' => 'required|numeric|max:255',
+            'nid' => 'required|numeric',
         ];
     }
 }

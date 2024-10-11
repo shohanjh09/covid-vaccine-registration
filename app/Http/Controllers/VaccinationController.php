@@ -29,11 +29,11 @@ class VaccinationController extends Controller
     /**
      * Search for vaccination status by NID.
      */
-    public function search(SearchUserRequest $request) : View
+    public function searchStatus(SearchUserRequest $request)
     {
-        $request = $request->validated();
+        $validatedData = $request->validated();
 
-        $statusData = $this->vaccinationService->getVaccinationStatus((int) $request->nid);
+        $statusData = $this->vaccinationService->getVaccinationStatus((int) $validatedData['nid']);
 
         return view('search.status', $statusData);
     }

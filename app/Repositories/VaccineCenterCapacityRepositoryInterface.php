@@ -22,5 +22,5 @@ interface VaccineCenterCapacityRepositoryInterface extends Repository
      * @param string $date
      * @return ModelInterface|null
      */
-    public function getCapacityRecord(int $vaccineCenterId, string $date): ?ModelInterface;
+    public function getCapacityRecordByVaccineCenterIdAndDate(int $vaccineCenterId, string $date): ?ModelInterface;
 }

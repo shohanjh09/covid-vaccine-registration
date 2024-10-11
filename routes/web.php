@@ -20,4 +20,5 @@ Route::post('/register', [RegistrationController::class, 'register']);
 
 // Search route
 Route::get('/search', [VaccinationController::class, 'showSearchForm'])->name('search');
-Route::get('/search/status', [VaccinationController::class, 'search'])->name('search.status');
+Route::get('/search/status', [VaccinationController::class, 'searchStatus'])->name('search.status');
+

@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Notifications\VaccinationReminder;
 use App\Repositories\VaccinationRepositoryInterface;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class VaccinationReminders extends Command
 {
@@ -34,6 +35,7 @@ class VaccinationReminders extends Command
             $user = $vaccination->user;
 
             if ($user) {
+                Log::info("Sending vaccination reminder to user {$user->id}");
                 // Send for notification
                 $user->notify(new VaccinationReminder($vaccination));
             }

@@ -2,12 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\Vaccination;
-use App\Models\VaccineCenter;
-use App\Models\VaccineCenterCapacity;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\VaccinationRepositoryInterface;
 use App\Repositories\VaccineCenterCapacityRepositoryInterface;
+use App\Repositories\VaccineCenterRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -17,7 +15,7 @@ class VaccinationService implements VaccinationServiceInterface
     /**
      * @var VaccineCenterCapacityRepositoryInterface
      */
-    protected VaccineCenterCapacityRepositoryInterface $vaccineCenterRepository;
+    protected VaccineCenterCapacityRepositoryInterface $vaccineCenterCapacityRepository;
 
     /**
      * @var UserRepositoryInterface
@@ -29,13 +27,22 @@ class VaccinationService implements VaccinationServiceInterface
      */
     protected VaccinationRepositoryInterface $vaccinationRepository;
 
-    public function __construct(VaccineCenterCapacityRepositoryInterface $vaccineCenterRepository,
-                                UserRepositoryInterface                  $userRepository,
-                                VaccinationRepositoryInterface           $vaccinationRepository)
+    /**
+     * @var VaccineCenterRepositoryInterface
+     */
+    protected VaccineCenterRepositoryInterface $vaccineCenterRepository;
+
+    public function __construct(
+        UserRepositoryInterface                  $userRepository,
+        VaccinationRepositoryInterface           $vaccinationRepository,
+        VaccineCenterRepositoryInterface         $vaccineCenterRepository,
+        VaccineCenterCapacityRepositoryInterface $vaccineCenterCapacityRepository
+    )
     {
-        $this->vaccineCenterRepository = $vaccineCenterRepository;
         $this->userRepository = $userRepository;
         $this->vaccinationRepository = $vaccinationRepository;
+        $this->vaccineCenterRepository = $vaccineCenterRepository;
+        $this->vaccineCenterCapacityRepository = $vaccineCenterCapacityRepository;
     }
 
     /**
@@ -82,7 +89,7 @@ class VaccinationService implements VaccinationServiceInterface
                 ]);
 
                 // Reduce the capacity for that day
-                $this->vaccineCenterRepository->decrementRemainingCapacity($user->vaccine_center_id, $nextAvailableDate);
+                $this->vaccineCenterCapacityRepository->decrementRemainingCapacity($user->vaccine_center_id, $nextAvailableDate);
             });
         } catch (\Exception $e) {
             // Log or handle the error
@@ -106,15 +113,13 @@ class VaccinationService implements VaccinationServiceInterface
             // Check if the current day is between Sunday (0) and Thursday (4)
             if ($date->dayOfWeek >= 0 && $date->dayOfWeek <= 4) {
                 // Check if the current date has available capacity
-                $capacityRecord = VaccineCenterCapacity::where('vaccine_center_id', $vaccineCenterId)
-                    ->whereDate('date', $date->toDateString())
-                    ->first();
+                $capacityRecord = $this->vaccineCenterCapacityRepository->getCapacityRecordByVaccineCenterIdAndDate($vaccineCenterId, $date->toDateString());
 
                 // If no record exists, create one with the center's daily capacity
                 if (!$capacityRecord) {
                     $center = $this->vaccineCenterRepository->get($vaccineCenterId);
 
-                    $capacityRecord = $this->vaccineCenterRepository->create([
+                    $capacityRecord = $this->vaccineCenterCapacityRepository->create([
                         'vaccine_center_id' => $vaccineCenterId,
                         'date' => $date->toDateString(),
                         'remaining_capacity' => $center->daily_capacity

@@ -11,6 +11,4 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
  */
 class Model extends BaseModel implements ModelInterface {
 
-    public $timestamps = false;
-
 }

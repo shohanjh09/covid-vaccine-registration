@@ -59,7 +59,7 @@ class VaccineCenterCapacityRepository implements VaccineCenterCapacityRepository
     /**
      * @inheritDoc
      */
-    public function getCapacityRecord(int $vaccineCenterId, string $date): ?ModelInterface
+    public function getCapacityRecordByVaccineCenterIdAndDate(int $vaccineCenterId, string $date): ?ModelInterface
     {
         return $this->model
             ->where('vaccine_center_id', $vaccineCenterId)

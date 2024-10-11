@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Log;
 use NotificationChannels\Twilio\TwilioMessage;
 use App\Models\Vaccination;
 
@@ -51,12 +52,19 @@ class VaccinationReminder extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+        Log::info("Sending vaccination reminder email to user: {$notifiable->id}, email: {$notifiable->email} and scheduled for {$this->vaccination->scheduled_date}");
+
+        $vaccineCenter = $this->vaccination->load('vaccineCenter');
+
         return (new MailMessage)
+            ->subject('Vaccination Reminder: Your Appointment is Scheduled')
             ->view('emails.vaccination-reminder', [
-                'user' => $notifiable,
-                'vaccination' => $this->vaccination,
+                'name' => $notifiable->name,
+                'scheduledDate' => $this->vaccination->scheduled_date,
+                'vaccineCenterName' => $vaccineCenter->name,
             ]);
     }
+
 
     /**
      * Get the Twilio / SMS representation of the notification.
@@ -66,8 +74,8 @@ class VaccinationReminder extends Notification implements ShouldQueue
      */
     public function toTwilio($notifiable)
     {
-        return (new TwilioMessage())
-            ->content('Reminder: Your COVID-19 vaccination is scheduled for ' . $this->vaccination->scheduled_date . ' at ' . $this->vaccination->vaccineCenter->name . '. Please bring your NID.');
+        /*return (new TwilioMessage())
+            ->content('Reminder: Your COVID-19 vaccination is scheduled for ' . $this->vaccination->scheduled_date . ' at ' . $this->vaccination->vaccineCenter->name . '. Please bring your NID.');*/
     }
 
     /**
