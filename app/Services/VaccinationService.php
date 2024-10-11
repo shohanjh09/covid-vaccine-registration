@@ -53,7 +53,7 @@ class VaccinationService implements VaccinationServiceInterface
         $user = $this->userRepository->getUserByNid($nid);
 
         if (!$user) {
-            return ['status' => 'User not found'];
+            return ['status' => 'Not scheduled'];
         }
 
         $vaccination = $user->vaccination;
