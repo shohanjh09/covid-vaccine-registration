@@ -16,7 +16,8 @@ Route::get('/timezone', function () {
 
 // Registration route
 Route::get('/register', [RegistrationController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [RegistrationController::class, 'register']);
+Route::post('/register', [RegistrationController::class, 'register'])->name('register.submit');
+
 
 // Search route
 Route::get('/search', [VaccinationController::class, 'showSearchForm'])->name('search');

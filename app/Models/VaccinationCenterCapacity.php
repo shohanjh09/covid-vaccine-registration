@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class VaccineCenterCapacity extends Model
+class VaccinationCenterCapacity extends Model
 {
     protected $table = 'vaccination_center_capacity';
 

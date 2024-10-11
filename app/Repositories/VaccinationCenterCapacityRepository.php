@@ -3,17 +3,17 @@
 namespace App\Repositories;
 
 use App\Models\ModelInterface;
-use App\Models\VaccineCenterCapacity;
+use App\Models\VaccinationCenterCapacity;
 use Illuminate\Database\Eloquent\Collection;
 
 class VaccinationCenterCapacityRepository implements VaccinationCenterCapacityRepositoryInterface
 {
     /**
-     * @var VaccineCenterCapacity
+     * @var VaccinationCenterCapacity
      */
-    protected VaccineCenterCapacity $model;
+    protected VaccinationCenterCapacity $model;
 
-    public function __construct(VaccineCenterCapacity $model) {
+    public function __construct(VaccinationCenterCapacity $model) {
         $this->model = $model;
     }
 
