@@ -183,6 +183,15 @@ docker exec -it covid-vaccine-app npm install
 docker exec -it covid-vaccine-app npm run build
 ```
 
+### Step 7: Clear Config, Cache, and Routes (if needed)
+Run the following command to clear config, cache, and routes:
+
+```bash
+docker exec -it covid-vaccine-app php artisan config:clear
+docker exec -it covid-vaccine-app php artisan cache:clear
+docker exec -it covid-vaccine-app php artisan route:clear
+```
+
 ### Step 7: Access the Application
 
 Once the setup is complete, you can access the application in your browser:
