@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\VaccinationCenter;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Cache;
 
 class VaccineCenterSeeder extends Seeder
 {
@@ -23,5 +24,8 @@ class VaccineCenterSeeder extends Seeder
             ['name' => 'AdhunikSadar Hospital', 'location' => 'Rangpur', 'daily_capacity' => 120],
             ['name' => 'Sadar Hospital', 'location' => 'Jhenaidah', 'daily_capacity' => 100],
         ]);
+
+        // Clear the cache after seeding to ensure fresh data is loaded
+        Cache::forget('active_vaccine_centers');
     }
 }

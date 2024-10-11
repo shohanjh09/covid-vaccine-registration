@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\ModelInterface;
 use App\Models\VaccinationCenter;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class VaccinationCenterRepository implements VaccinationCenterRepositoryInterface
 {
@@ -61,9 +62,11 @@ class VaccinationCenterRepository implements VaccinationCenterRepositoryInterfac
      */
     public function getActiveVaccineCenters() : Collection
     {
-        return $this->model
-            ->where('active', VaccinationCenter::ACTIVE)
-            ->orderBy('name', 'asc')
-            ->get();
+        // Cache the active vaccine centers for 1 day (1440 minutes)
+        return Cache::remember('active_vaccine_centers', 1440, function () {
+            return $this->model
+                ->where('active', VaccinationCenter::ACTIVE)
+                ->get();
+        });
     }
 }

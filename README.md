@@ -1,30 +1,273 @@
 # COVID-19 Vaccine Registration System
 
-This is a **COVID-19 Vaccine Registration System** built using **Laravel**. It allows users to register for vaccination, select a vaccine center, and check their registration status. The system includes automated notifications for vaccination schedules, both via email and SMS (Twilio or similar integration), and follows a clean, modern design.
+This is a **COVID-19 Vaccine Registration System** built using **Laravel**. It allows users to register for vaccination, select a vaccine center, and check their vaccination status. The system already supports email and can easily integrate SMS notifications (via **Twilio**) to remind users about their scheduled vaccination date.
+
+## Table of Contents
+
+1. [Features](#features)
+2. [Architecture Overview](#architecture-overview)
+    - [Service-Repository Pattern](#service-repository-pattern)
+    - [Notifications](#notifications)
+    - [Caching](#caching-example)
+    - [Redis Integration](#redis-integration)
+    - [Supervisor for Queue and Scheduling](#supervisor-for-queue-and-scheduling)
+3. [Setup Guide](#setup-guide)
+4. [Testing](#testing)
+5. [Future Improvements](#future-improvements)
+6. [Performance Optimization](#performance-optimization)
+7. [Video Tutorials](#video-tutorials)
+8. [Conclusion](#conclusion)
 
 ## Features
 
-- **User Registration**: Users can register for vaccination by providing their full name, email, NID (National ID), and selecting a vaccination center.
-- **Vaccine Center Selection**: Users can select a vaccine center from a pre-populated list.
-- **Check Vaccination Status**: Users can enter their NID to check their registration and vaccination status. The system provides various statuses such as "Not Registered," "Scheduled," and "Vaccinated."
-- **Scheduled Vaccination**: Vaccinations are scheduled based on the first-come-first-serve principle, ensuring users get scheduled dates according to available slots.
-- **Email Notifications**: Automated email reminders are sent to users before their scheduled vaccination date. Emails can be tested using **Mailtrap**.
-- **SMS Notifications**: SMS notifications are sent via Twilio (or similar services) to remind users of their scheduled vaccination date.
-- **Observer Design Pattern for Notifications**: The application follows the **Observer Design Pattern** to handle email and SMS notifications, ensuring that notifications are sent when certain events (like scheduling a vaccination) are triggered.
-- **Service-Repository Structure**: The project follows a clean architecture where the controller calls the service, and the service interacts with the repository for database operations.
-- **phpMyAdmin**: Included for easy database management via a browser.
-- **Redis**: Utilized for caching and queue management.
+- **User Registration**: Users can register for vaccination by providing their full name, email, NID (National ID), and selecting a vaccine center.
+- **Vaccination Scheduling**: Users are automatically scheduled based on first-come-first-serve strategy, considering the daily capacity of vaccine centers. Schedule vaccination only for the weekdays (Sunday to Thursday).
+- **Vaccination Status Check**: Users can check their registration status using their NID. The system displays different statuses (`Not Registered`, `Not Scheduled`, `Scheduled`, `Vaccinated`).
+- **Email Notifications**: Sends an email reminder to users before their scheduled vaccination date.
+- **SMS Notifications (if required)**: SMS notifications can be integrated via **Twilio** to remind users about their vaccination.
+- **Redis for Cache and Queue**: Uses Redis for caching active vaccine centers and managing job queues for notifications.
+- **Service-Repository Pattern**: Clean architecture for handling the business logic and database operations, ensuring testability and flexibility.
+- **phpMyAdmin and Redis**: Included for easy database management and Redis for queue management.
 
-## Tech Stack
+## Architecture Overview
 
-- **Laravel (latest version)**
-- **nginx** for serving the Laravel application.
-- **MySQL** for database management.
-- **phpMyAdmin** for managing the database via a web interface.
-- **Redis** for caching and queue management.
-- **Bootstrap 5** for the frontend.
-- **Vite** for asset bundling and front-end tooling.
-- **Docker** for containerized development.
+The architecture of this system follows a service-repository pattern and utilizes Laravel’s built-in notification system for email and easy enhancement for SMS notifications.
+
+### Service-Repository Pattern
+
+The service layer manages the business logic, while repositories handle the database interactions, promoting modular and testable code.
+
+- **Services**: Handle business logic and interact with repositories.
+    - **VaccinationService**: Manages vaccination scheduling, retrieving vaccination status, and working with repository layers.
+
+- **Repositories**: Provide an interface to the database for different entities.
+    - **UserRepository**: Handles user-related database operations.
+    - **VaccinationRepository**: Manages vaccination records.
+    - **VaccinationCenterRepository**: Manages vaccine centers.
+    - **VaccinationCenterCapacityRepository**: Manages the capacity for vaccine centers, ensuring centers don’t exceed their daily limits.
+
+### Notifications
+
+- **Email and SMS Notifications**: Implemented using Laravel's notification system. Users receive email and SMS reminders (not implemented now) about their vaccination schedules. If Twilio credentials are set, SMS notifications will be sent.
+- **How Notifications Work**: The system uses a job queue to send notifications asynchronously, ensuring that the main process isn’t blocked by notification sending.
+
+### Caching Example
+
+Caching is used to improve performance by reducing the number of database queries. Here’s how we cache the list of active vaccine centers for 1 day (1440 minutes):
+
+```php
+/**
+ * @inheritDoc
+ */
+public function getActiveVaccineCenters() : Collection
+{
+    return Cache::remember('active_vaccine_centers', 1440, function () {
+        return $this->model->where('active', VaccinationCenter::ACTIVE)->get();
+    });
+}
+```
+
+This example caches active vaccine centers, ensuring quicker access to frequently queried data. The cache will automatically refresh after one day.
+
+### Redis Integration
+
+- **Redis for Cache**: Redis is used to cache data like vaccine centers, ensuring faster lookups and reducing database load.
+- **Redis for Queues**: Jobs like sending notifications (email and SMS) are handled asynchronously using Redis for queuing, making the application more responsive and scalable.
+
+### Supervisor for Queue and Scheduling
+
+- **Supervisor** is configured to manage both the queue workers and the Laravel scheduler. The queue worker processes jobs like sending notifications in the background, while the scheduler manages recurring tasks.
+
+- **Key Commands Scheduled**:
+    ```php
+    // Schedule the vaccination reminder job to run every day at 9 PM.
+    Schedule::command('vaccination:reminders')->dailyAt('21:00');
+
+    // Schedule the vaccination job dispatcher to run every minute.
+    Schedule::command('vaccination:schedule')->everyMinute();
+    ```
+
+#### Commands for Scheduling and Notifications
+
+- **Vaccination Scheduling Command** (`vaccination:schedule`): Periodically schedules vaccinations for users who haven’t been scheduled yet.
+- **Vaccination Reminders Command** (`vaccination:reminders`): Sends reminders to users scheduled for vaccination the next day.
+
+---
+
+## Setup Guide
+
+### Prerequisites
+
+Make sure you have the following tools installed:
+
+- **Docker**
+- **Docker Compose**
+- **Git**
+
+### Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/your-repo/covid-vaccine-registration.git
+cd covid-vaccine-registration
+```
+
+### Step 2: Setup Environment Variables
+
+Copy the example `.env` file and set up the environment variables:
+
+```bash
+cp .env.example .env
+```
+
+Update the `.env` file with the following settings:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=covid_vaccine
+DB_USERNAME=root
+DB_PASSWORD=Uhtkjf75rbT8e3
+
+TWILIO_SID=your_twilio_sid
+TWILIO_AUTH_TOKEN=your_twilio_auth_token
+TWILIO_SMS_FROM=your_twilio_phone_number
+
+# Mailtrap for email testing
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_mailtrap_username
+MAIL_PASSWORD=your_mailtrap_password
+```
+
+### Step 3: Docker Setup
+
+Build and start the Docker containers:
+
+```bash
+docker-compose up --build
+```
+
+### Step 4: Install Dependencies and Generate Key
+
+1. **Install Composer Dependencies**:
+
+```bash
+docker exec -it covid-vaccine-app composer install
+```
+
+2. **Generate the Application Key**:
+
+```bash
+docker exec -it covid-vaccine-app php artisan key:generate
+```
+
+### Step 5: Run Migrations and Seed Database
+
+Run the migrations and seed the vaccine centers:
+
+```bash
+docker exec -it covid-vaccine-app php artisan migrate
+docker exec -it covid-vaccine-app php artisan db:seed --class=VaccineCenterSeeder
+```
+
+### Step 6: Compile Assets
+
+Run the following commands to compile the CSS and JavaScript assets:
+
+```bash
+docker exec -it covid-vaccine-app npm install
+docker exec -it covid-vaccine-app npm run build
+```
+
+### Step 7: Access the Application
+
+Once the setup is complete, you can access the application in your browser:
+
+- Application: [http://localhost:8070](http://localhost:8070)
+- phpMyAdmin: [http://localhost:8071](http://localhost:8071)
+
+### Step 8: Managing Queues and Scheduler (No action Required as Supervisor managing it)
+
+- To start the queue worker:
+
+~~docker exec -it covid-vaccine-app php artisan queue:work~~
+
+- The scheduler and queue worker are already managed by Supervisor in Docker. No manual intervention is required.
+
+---
+
+## Testing
+
+Run unit and feature tests using PHPUnit:
+
+```bash
+docker exec -it covid-vaccine-app php artisan test
+```
+
+Manual testing:
+
+- **User Registration**: Register a user for vaccination and verify the registration in the database.
+- **Vaccination Status**: Check a user's vaccination status using their NID.
+- **Notifications**: Verify email and SMS reminders are sent using **Mailtrap** and **Twilio**.
+
+---
+
+## Future Improvements
+
+- **Performance Optimization**:
+    - **Indexing**: Add database indexes for frequently queried fields.
+    - **Optimize Queries**: Refactor complex queries to improve performance and reduce overhead.
+    - **Additional Caching**: Implement more aggressive caching for user and vaccination data to further reduce database queries.
+
+- **Admin Panel**: Implement an admin dashboard to allow easy management of vaccine centers and vaccination schedules.
+
+- **Load Balancing**: Add a load balancer to distribute traffic across multiple instances of the application.
+
+- **Improved Search Efficiency**: For large datasets, implementing more advanced search strategies or Elasticsearch could significantly boost search performance.
+
+- **Additional Tests**: Currently, the system includes unit and feature tests. Additional test coverage can be added to further ensure stability, especially around edge cases, bulk actions, and concurrency handling.
+
+---
+
+## Performance Optimization
+
+### User Registration and Search Optimization
+
+To ensure the user registration and search features are fast, various strategies can be employed, both on a low and high level:
+
+#### Low-Level Optimizations:
+1. **Database Indexing**:
+    - Add indexes to frequently queried fields such as `nid` (National ID) and `email` to speed up searches which we did.
+
+2. **Eager Loading**:
+    - Use eager loading to avoid N+1 query problems, especially when fetching related data like the vaccine center or vaccination status for a user.
+
+3. **Caching**:
+    - Cache vaccine centers using Redis to avoid querying the database for frequently accessed data.
+    - Example:
+        ```php
+      public function getActiveVaccineCenters() : Collection
+      {
+            // Cache the active vaccine centers for 1 day (1440 minutes)      
+            return Cache::remember('active_vaccine_centers', 1440, function () {
+                return $this->model->where('active', VaccinationCenter::ACTIVE)->get();
+            });
+      }
+        ```
+
+#### High-Level Optimizations:
+1. **Database Sharding**:
+    - For large datasets, you can shard the database based on regions or vaccine centers to distribute the load.
+
+2. **Asynchronous Processing**:
+    - Move complex registration logic or search operations into the background using queues, especially if integrating external services like SMS or email.
+
+3. **Scaling**:
+    - Horizontal scaling can be achieved by setting up multiple instances of the application behind a load balancer to distribute traffic and reduce bottlenecks.
+
+---
 
 ## Video Tutorials
 
@@ -40,228 +283,9 @@ Watch this video to see the complete **feature demonstration** of the COVID-19 V
 
 [**Feature Demonstration Video**](https://www.example.com/feature-demo-video-url)
 
-## Setup Guide
-
-### Requirements
-
-Before setting up the project, make sure you have the following installed:
-
-- **Docker**
-- **Docker Compose**
-- **Git**
-
-### Step 1: Clone the Repository
-
-Clone the repository to your local machine:
-
-```bash
-git clone https://github.com/your-repo/covid-vaccine-registration.git
-```
-
-### Step 2: Navigate to the Project Directory
-
-```bash
-cd covid-vaccine-registration
-```
-
-### Step 3: Setup Environment
-
-Copy the `.env.example` file to create your `.env` file:
-
-```bash
-cp .env.example .env
-```
-
-Modify the `.env` file with the following values for Docker, MySQL, and Twilio:
-
-```
-DB_CONNECTION=mysql
-DB_HOST=db
-DB_PORT=3306
-DB_DATABASE=covid_vaccine
-DB_USERNAME=root
-DB_PASSWORD=Uhtkjf75rbT8e3
-
-# Twilio SMS credentials
-TWILIO_SID=your_twilio_sid
-TWILIO_AUTH_TOKEN=your_twilio_auth_token
-TWILIO_SMS_FROM=your_twilio_phone_number
-
-# Email settings (use your preferred email service)
-MAIL_MAILER=smtp
-MAIL_HOST=smtp.mailtrap.io
-MAIL_PORT=2525
-MAIL_USERNAME=your_mailtrap_username
-MAIL_PASSWORD=your_mailtrap_password
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS="noreply@vaccine-system.com"
-MAIL_FROM_NAME="${APP_NAME}"
-
-# Optional - Set your preferred port for the application
-APP_PORT=8070
-```
-
-### Step 4: Docker Setup
-
-The application is containerized with **nginx**, **MySQL**, **phpMyAdmin**, **Redis**, and the Laravel application itself.
-
-#### Step 4.1: Build and Start the Docker Containers
-
-Run the following command to build and start your Docker containers:
-
-```bash
-docker-compose up --build
-```
-
-This will start the **nginx** server, **Laravel application**, **MySQL database**, **phpMyAdmin**, and **Redis** containers.
-
-### Step 5: Composer Install and Key Generation
-
-1. **Run Composer Install** inside the Docker container to install all the Laravel dependencies:
-
-```bash
-docker exec -it covid-vaccine-app composer install
-```
-
-2. **Generate the Laravel Application Key**:
-
-```bash
-docker exec -it covid-vaccine-app php artisan key:generate
-```
-
-### Step 6: Run Migrations and Seed Vaccine Centers
-
-Once your containers are up and running, you need to set up the database.
-
-1. **Run migrations** to create the necessary database tables:
-
-```bash
-docker exec -it covid-vaccine-app php artisan migrate
-```
-
-2. **Seed the database** with some initial vaccine centers:
-
-```bash
-docker exec -it covid-vaccine-app php artisan db:seed --class=VaccineCenterSeeder
-```
-
-### Step 7: Cache, Config, and Route Clear (Optional)
-
-If needed, you can clear cached data for the application using the following commands:
-
-```bash
-docker exec -it covid-vaccine-app php artisan config:clear
-docker exec -it covid-vaccine-app php artisan cache:clear
-docker exec -it covid-vaccine-app php artisan route:clear
-```
-
-### Step 8: Compile Assets with Vite
-
-To compile the front-end assets (CSS and JS), run the following command inside the Docker container:
-
-```bash
-docker exec -it covid-vaccine-app npm run dev
-```
-
-For production builds:
-
-```bash
-docker exec -it covid-vaccine-app npm run build
-```
-
-### Step 9: Access the Application
-
-Once everything is set up, you can access the application and services in your browser:
-
-- **Application**: [http://localhost:8070](http://localhost:8070)
-- **phpMyAdmin**: [http://localhost:8071](http://localhost:8071)
-
-The **phpMyAdmin** interface allows you to easily manage your MySQL database via a web browser. Use the following credentials:
-
-- Username: `root`
-- Password: `Uhtkjf75rbT8e3`
-
-### Step 10: Using Redis for Caching and Queues
-
-This application uses **Redis** for caching and queue management. Ensure that Redis is running as part of the Docker setup. You can monitor the status of the queues and Redis by using Laravel's built-in commands.
-
-Run the following to start processing jobs:
-
-```bash
-docker exec -it covid-vaccine-app php artisan queue:work
-```
-
-## Email and SMS Notifications Testing
-
-- **Email Notifications**: You can test email notifications using **Mailtrap**, a service for safely testing emails during development.
-
-  To test:
-    - Set up a Mailtrap account and add your **username** and **password** in the `.env` file under the mail configuration.
-    - Mailtrap allows you to view emails sent by the application in a sandbox environment.
-
-- **SMS Notifications**: SMS notifications are sent using **Twilio**. Make sure you configure the Twilio API credentials in the `.env` file. If using the **Twilio test credentials**, messages will be simulated.
-
-## Testing
-
-1. **Unit and Feature Testing**:
-    - Run Laravel’s built-in tests to ensure the application works as expected.
-    - Use the following command to run all the tests:
-
-   ```bash
-   docker exec -it covid-vaccine-app php artisan test
-   ```
-
-2. **Manual Testing**:
-    - **User Registration**: Test user registration by visiting the registration page, submitting a valid form, and ensuring that users are added to the database.
-    - **Vaccination Status**: Test the vaccination status feature by submitting a valid NID and verifying the displayed status.
-    - **Email Notifications**: Use **Mailtrap** to verify that reminder emails are being sent before scheduled vaccination dates.
-    - **SMS Notifications**: Use **Twilio** or a similar service to verify SMS notifications.
-
-## Code Overview
-
-### Observer Design Pattern for Notifications
-
-The system uses the **Observer Design Pattern** to handle the notifications. When events such as user registration or scheduling occur, the observers trigger the appropriate notifications (email and SMS) to be sent to the users. This ensures that the notification system is decoupled and easily extendable.
-
-### Service-Repository Pattern
-
-- **Controllers**: Each controller interacts with a service layer, ensuring separation of concerns.
-- **Services**: Handle business logic. Controllers call these services, which then interact with repositories.
-- **Repositories**: Handle all database interactions. Services delegate data access to repositories, keeping the application flexible and testable.
-
-### Notifications
-
-- **Email Notifications**: Sent to users the night before their scheduled vaccination date via Laravel’s notification system.
-- **SMS Notifications**: Sent via Twilio (or other SMS providers) to remind users of their vaccination date.
-
-### Controllers
-
-- **RegistrationController**: Handles user registration and scheduling of vaccination.
-- **VaccinationController**: Handles the logic for checking vaccination status.
-
-### Models
-
-- **
-
-User**: Represents users who register for vaccination.
-- **VaccineCenter**: Represents vaccination centers.
-- **Vaccination**: Represents vaccination records and scheduled dates for users.
-
-### Views
-
-- **layouts/app.blade.php**: Base layout with navigation and footer.
-- **registration/register.blade.php**: Form for registering users for vaccination.
-- **search/status.blade.php**: Page for checking vaccination status.
-
-## Future Improvements
-
-- **Admin Panel**: Add admin functionality for managing vaccine centers.
-- **Multi-language Support**: Add support for multiple languages for a better user experience.
-
-## License
-
-This project is open-source and available under the [MIT license](https://opensource.org/licenses/MIT).
-
 ---
 
-By following this README, you should be able to set up and run the **COVID-19 Vaccine Registration System** with **Docker**, **nginx**, **phpMyAdmin**, and **Redis**. If you encounter any issues during the setup or have questions, feel free to reach out via GitHub issues or contribute by submitting a pull request.
+## Conclusion
+
+This **COVID-19 Vaccine Registration System** demonstrates a clean and scalable approach to handling user registrations, vaccination scheduling, and notifications. By leveraging Laravel’s notification system, Redis for cache and queues, and the service-repository pattern, the application is designed to be both efficient and flexible. The use of Docker ensures consistent environments, while Supervisor handles background processes like queues and scheduling seamlessly.
+

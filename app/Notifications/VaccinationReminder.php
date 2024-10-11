@@ -9,7 +9,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
-use NotificationChannels\Twilio\TwilioMessage;
 
 class VaccinationReminder extends Notification implements ShouldQueue
 {
@@ -75,18 +74,6 @@ class VaccinationReminder extends Notification implements ShouldQueue
                 'scheduledDate' => $this->vaccination->scheduled_date,
                 'vaccineCenterName' => $this->vaccineCenter->name,
             ]);
-    }
-
-    /**
-     * Get the Twilio / SMS representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return TwilioMessage
-     */
-    public function toTwilio($notifiable)
-    {
-        return (new TwilioMessage())
-            ->content('Reminder: Your COVID-19 vaccination is scheduled for ' . $this->vaccination->scheduled_date . ' at ' . $this->vaccineCenter->name . '. Please bring your NID.');
     }
 
     /**
