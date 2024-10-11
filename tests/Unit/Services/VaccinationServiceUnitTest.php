@@ -43,7 +43,7 @@ class VaccinationServiceUnitTest extends TestCase
 
     public function testGetVaccinationStatusUserNotFound()
     {
-        // Mock UserRepository to return null (user not found)
+        // Mock UserRepository to return null (Not registered)
         $this->userRepositoryMock->shouldReceive('getUserByNid')
             ->once()
             ->with(123456789)
@@ -53,7 +53,7 @@ class VaccinationServiceUnitTest extends TestCase
         $result = $this->vaccinationService->getVaccinationStatus(123456789);
 
         // Assert the result
-        $this->assertEquals(['status' => 'User not found'], $result);
+        $this->assertEquals(['status' => 'Not registered'], $result);
     }
 
     public function testGetVaccinationStatusNotScheduled()

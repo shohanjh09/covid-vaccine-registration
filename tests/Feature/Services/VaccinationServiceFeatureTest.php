@@ -18,7 +18,7 @@ class VaccinationServiceFeatureTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertViewIs('search.status');
-        $response->assertViewHas('status', 'User not found');
+        $response->assertViewHas('status', 'Not registered');
     }
 
     public function testVaccinationStatusNotScheduled()
