@@ -4,7 +4,6 @@ namespace Tests\Feature\Services;
 
 use App\Models\User;
 use App\Models\Vaccination;
-use App\Models\VaccinationCenter;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

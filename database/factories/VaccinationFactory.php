@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\User;
 use App\Models\Vaccination;
-use App\Models\VaccinationCenter;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

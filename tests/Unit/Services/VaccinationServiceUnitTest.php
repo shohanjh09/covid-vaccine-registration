@@ -3,13 +3,11 @@
 namespace Tests\Unit\Services;
 
 use App\Models\User;
-use App\Models\VaccinationCenter;
-use App\Models\VaccinationCenterCapacity;
-use App\Services\VaccinationService;
 use App\Repositories\UserRepositoryInterface;
-use App\Repositories\VaccinationRepositoryInterface;
 use App\Repositories\VaccinationCenterCapacityRepositoryInterface;
 use App\Repositories\VaccinationCenterRepositoryInterface;
+use App\Repositories\VaccinationRepositoryInterface;
+use App\Services\VaccinationService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
