@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SearchUserRequest;
 use App\Services\VaccinationServiceInterface;
+use Illuminate\View\View;
 
 class VaccinationController extends Controller
 {
@@ -20,15 +21,15 @@ class VaccinationController extends Controller
     /**
      * Show the search form.
      */
-    public function showSearchForm()
+    public function showSearchForm() : View
     {
-        return view('search.search');
+        return view('search.status');
     }
 
     /**
      * Search for vaccination status by NID.
      */
-    public function search(SearchUserRequest $request)
+    public function search(SearchUserRequest $request) : View
     {
         $request = $request->validated();
 

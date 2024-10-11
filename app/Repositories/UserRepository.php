@@ -60,4 +60,12 @@ class UserRepository implements UserRepositoryInterface
     {
         return $this->model->where('nid', $nid)->first();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUnscheduledUsers(): Collection
+    {
+        return $this->model->doesntHave('vaccination')->get();
+    }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Vaccination;
 use App\Notifications\VaccinationReminder;
+use App\Repositories\VaccinationRepositoryInterface;
 use Illuminate\Console\Command;
 
 class VaccinationReminders extends Command
@@ -25,16 +25,28 @@ class VaccinationReminders extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(VaccinationRepositoryInterface $vaccinationRepository): void
     {
-        $tomorrow = now()->addDay()->toDateString();
-        $vaccinations = Vaccination::where('scheduled_date', $tomorrow)->get();
+        $tomorrow = $this->getTomorrowDate();
+        $vaccinations = $vaccinationRepository->getVaccinationByScheduledDate($tomorrow);
 
         foreach ($vaccinations as $vaccination) {
             $user = $vaccination->user;
 
-            // Send for notification
-            $user->notify(new VaccinationReminder($vaccination));
+            if ($user) {
+                // Send for notification
+                $user->notify(new VaccinationReminder($vaccination));
+            }
         }
+    }
+
+    /**
+     * Get tomorrow's date
+     *
+     * @return string
+     */
+    private function getTomorrowDate(): string
+    {
+        return now()->addDay()->toDateString();
     }
 }

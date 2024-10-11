@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class VaccineCenter extends Model
 {
@@ -27,7 +27,7 @@ class VaccineCenter extends Model
     /**
      * Relationship: A vaccine center has many vaccinations.
      */
-    public function vaccinations()
+    public function vaccinations(): HasMany
     {
         return $this->hasMany(Vaccination::class);
     }

@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Model
 {
-    use HasFactory, Notifiable;
+    use Notifiable;
 
     protected $table = 'users';
 
@@ -35,7 +33,7 @@ class User extends Authenticatable
     {
         return $this->hasOne(Vaccination::class);
     }
-    
+
     /**
      * Relationship: A user belongs to a vaccine center.
      */

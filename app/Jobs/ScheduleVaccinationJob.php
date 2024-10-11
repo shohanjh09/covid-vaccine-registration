@@ -31,7 +31,7 @@ class ScheduleVaccinationJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(VaccinationServiceInterface $vaccinationService)
+    public function handle(VaccinationServiceInterface $vaccinationService): void
     {
         $vaccinationService->setVaccinationScheduleForUser($this->userId);
     }

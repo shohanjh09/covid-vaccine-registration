@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 class VaccineCenterCapacity extends Model
 {
     protected $table = 'vaccine_center_capacity';
@@ -17,7 +19,7 @@ class VaccineCenterCapacity extends Model
     /**
      * Get the vaccine center that owns this capacity record.
      */
-    public function vaccineCenter()
+    public function vaccineCenter() : BelongsTo
     {
         return $this->belongsTo(VaccineCenter::class);
     }

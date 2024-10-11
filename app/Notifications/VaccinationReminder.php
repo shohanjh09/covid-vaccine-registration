@@ -13,12 +13,12 @@ class VaccinationReminder extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    protected $vaccination;
+    protected Vaccination $vaccination;
 
     /**
      * Create a new notification instance.
      *
-     * @param  \App\Models\Vaccination  $vaccination
+     * @param Vaccination $vaccination
      * @return void
      */
     public function __construct(Vaccination $vaccination)
@@ -47,7 +47,7 @@ class VaccinationReminder extends Notification implements ShouldQueue
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toMail($notifiable)
     {
@@ -62,7 +62,7 @@ class VaccinationReminder extends Notification implements ShouldQueue
      * Get the Twilio / SMS representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \NotificationChannels\Twilio\TwilioMessage
+     * @return TwilioMessage
      */
     public function toTwilio($notifiable)
     {

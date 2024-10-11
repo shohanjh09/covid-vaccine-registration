@@ -55,4 +55,32 @@ class VaccineCenterCapacityRepository implements VaccineCenterCapacityRepository
 
         return $vaccineCenter;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getCapacityRecord(int $vaccineCenterId, string $date): ?ModelInterface
+    {
+        return $this->model
+            ->where('vaccine_center_id', $vaccineCenterId)
+            ->whereDate('date', $date)
+            ->first();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function decrementRemainingCapacity(int $vaccineCenterId, string $date): ?ModelInterface
+    {
+        $capacityRecord = $this->model
+            ->where('vaccine_center_id', $vaccineCenterId)
+            ->whereDate('date', $date)
+            ->first();
+
+        if ($capacityRecord) {
+            $capacityRecord->decrement('remaining_capacity');
+        }
+
+        return $capacityRecord;
+    }
 }

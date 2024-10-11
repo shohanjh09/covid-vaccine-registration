@@ -55,4 +55,11 @@ class VaccinationRepository implements VaccinationRepositoryInterface
 
         return $vaccineCenter;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getVaccinationByScheduledDate(string $date): Collection {
+        return $this->model->where('scheduled_date', $date)->get();
+    }
 }

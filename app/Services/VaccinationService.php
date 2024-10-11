@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use App\Models\Vaccination;
 use App\Models\VaccineCenter;
 use App\Models\VaccineCenterCapacity;
 use App\Repositories\UserRepositoryInterface;
+use App\Repositories\VaccinationRepositoryInterface;
 use App\Repositories\VaccineCenterCapacityRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -24,11 +24,18 @@ class VaccinationService implements VaccinationServiceInterface
      */
     protected UserRepositoryInterface $userRepository;
 
+    /**
+     * @var VaccinationRepositoryInterface
+     */
+    protected VaccinationRepositoryInterface $vaccinationRepository;
+
     public function __construct(VaccineCenterCapacityRepositoryInterface $vaccineCenterRepository,
-                                UserRepositoryInterface                  $userRepository)
+                                UserRepositoryInterface                  $userRepository,
+                                VaccinationRepositoryInterface           $vaccinationRepository)
     {
         $this->vaccineCenterRepository = $vaccineCenterRepository;
         $this->userRepository = $userRepository;
+        $this->vaccinationRepository = $vaccinationRepository;
     }
 
     /**
@@ -36,13 +43,12 @@ class VaccinationService implements VaccinationServiceInterface
      */
     public function getVaccinationStatus(int $nid): array
     {
-        // update this method code
         $user = $this->userRepository->getUserByNid($nid);
+
         if (!$user) {
             return ['status' => 'User not found'];
         }
 
-        // Fetch the user's vaccination status
         $vaccination = $user->vaccination;
 
         return match (true) {
@@ -61,30 +67,22 @@ class VaccinationService implements VaccinationServiceInterface
     /**
      * @inheritDoc
      */
-    public function setVaccinationScheduleForUser(int $userId) : void
+    public function setVaccinationScheduleForUser(int $userId): void
     {
         try {
             DB::transaction(function () use ($userId) {
-                $user = User::find($userId);
+                $user = $this->userRepository->get($userId);
 
                 // Find the next available date
-                $nextAvailableDate = $this->findNextAvailableDate($user->vaccineCenterId);
+                $nextAvailableDate = $this->findNextAvailableDate($user->vaccine_center_id);
 
-                // Schedule the user's vaccination
-                Vaccination::create([
+                $this->vaccinationRepository->create([
                     'user_id' => $user->id,
-                    'vaccine_center_id' => $user->vaccineCenterId,
                     'scheduled_date' => $nextAvailableDate,
                 ]);
 
                 // Reduce the capacity for that day
-                $capacityRecord = VaccineCenterCapacity::where('vaccine_center_id', $user->vaccineCenterId)
-                    ->whereDate('date', $nextAvailableDate)
-                    ->first();
-
-                if ($capacityRecord) {
-                    $capacityRecord->decrement('remaining_capacity');
-                }
+                $this->vaccineCenterRepository->decrementRemainingCapacity($user->vaccine_center_id, $nextAvailableDate);
             });
         } catch (\Exception $e) {
             // Log or handle the error
@@ -101,7 +99,8 @@ class VaccinationService implements VaccinationServiceInterface
      */
     private function findNextAvailableDate(int $vaccineCenterId): string
     {
-        $date = Carbon::now(); // Start from today's date
+        // Start from today's date
+        $date = Carbon::now();
 
         while (true) {
             // Check if the current day is between Sunday (0) and Thursday (4)
@@ -113,8 +112,9 @@ class VaccinationService implements VaccinationServiceInterface
 
                 // If no record exists, create one with the center's daily capacity
                 if (!$capacityRecord) {
-                    $center = VaccineCenter::find($vaccineCenterId);
-                    $capacityRecord = VaccineCenterCapacity::create([
+                    $center = $this->vaccineCenterRepository->get($vaccineCenterId);
+
+                    $capacityRecord = $this->vaccineCenterRepository->create([
                         'vaccine_center_id' => $vaccineCenterId,
                         'date' => $date->toDateString(),
                         'remaining_capacity' => $center->daily_capacity

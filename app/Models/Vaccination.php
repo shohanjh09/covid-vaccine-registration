@@ -3,11 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Vaccination extends Model
 {
-    use HasFactory;
-
     protected $table = 'vaccinations';
 
     protected $primaryKey = 'id';
@@ -27,7 +26,7 @@ class Vaccination extends Model
     /**
      * Relationship: A vaccination belongs to a user.
      */
-    public function user()
+    public function user() : BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -35,7 +34,7 @@ class Vaccination extends Model
     /**
      * Relationship: A vaccination belongs to a vaccine center.
      */
-    public function vaccineCenter()
+    public function vaccineCenter() : BelongsTo
     {
         return $this->belongsTo(VaccineCenter::class);
     }
