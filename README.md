@@ -192,20 +192,28 @@ docker exec -it covid-vaccine-app php artisan cache:clear
 docker exec -it covid-vaccine-app php artisan route:clear
 ```
 
-### Step 7: Access the Application
+### Step 8: Access the Application
 
 Once the setup is complete, you can access the application in your browser:
 
 - Application: [http://localhost:8070](http://localhost:8070)
 - phpMyAdmin: [http://localhost:8071](http://localhost:8071)
 
-### Step 8: Managing Queues and Scheduler (No action Required as Supervisor managing it)
+### Step 9: Managing Queues and Scheduler
+Run the following commands to manually start queues and schedules if needed:
 
-- To start the queue worker:
+#### Run the scheduler manually:
 
-~~docker exec -it covid-vaccine-app php artisan queue:work~~
+```bash
+docker exec -it covid-vaccine-app php artisan schedule:run
+```
 
-- The scheduler and queue worker are already managed by Supervisor in Docker. No manual intervention is required.
+#### Run the queue worker:
+
+```bash
+docker exec -it covid-vaccine-app php /var/www/html/artisan queue:work
+```
+
 
 ---
 

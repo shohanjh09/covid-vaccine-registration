@@ -15,7 +15,7 @@
                     <form action="{{ route('search.status') }}" method="GET">
                         <div class="form-group">
                             <label for="nid">Enter Your National ID (NID)</label>
-                            <input type="text" name="nid" id="nid" class="form-control" placeholder="Enter your NID" required>
+                            <input type="number" name="nid" id="nid" class="form-control" placeholder="Enter your NID" required>
                         </div>
 
                         <button type="submit" class="btn btn-primary btn-block">Check Status</button>

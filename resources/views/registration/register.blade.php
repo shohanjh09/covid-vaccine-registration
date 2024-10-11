@@ -25,7 +25,7 @@
 
                         <div class="form-group">
                             <label for="nid">National ID (NID)</label>
-                            <input type="text" name="nid" id="nid" class="form-control" placeholder="Enter your NID" required>
+                            <input type="number" name="nid" id="nid" class="form-control" placeholder="Enter your NID" required>
                         </div>
 
                         <div class="form-group">
