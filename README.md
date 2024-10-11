@@ -2,6 +2,8 @@
 
 This is a **COVID-19 Vaccine Registration System** built using **Laravel**. It allows users to register for vaccination, select a vaccine center, and check their vaccination status. The system already supports email and can easily integrate SMS notifications (via **Twilio**) to remind users about their scheduled vaccination date.
 
+![COVID-19 Vaccine Registration System](./public/images/covid-vaccine-home.png)
+
 ## Table of Contents
 
 1. [Features](#features)
