@@ -148,7 +148,7 @@ MAIL_PASSWORD=your_mailtrap_password
 Build and start the Docker containers:
 
 ```bash
-docker-compose up --build
+docker-compose up --build -d
 ```
 
 ### Step 4: Install Dependencies and Generate Key
