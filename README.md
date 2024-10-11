@@ -294,13 +294,13 @@ To ensure the user registration and search features are fast, various strategies
 
 Watch this video to understand the full **setup process** of the COVID-19 Vaccine Registration System using Docker:
 
-[**Setup Video**](https://www.example.com/setup-video-url)
+[**Setup Video**](https://drive.google.com/file/d/1s2aTn9OJki8fAdpjJxXzPQTIOxhjfTMy/view?usp=sharing)
 
 ### 2. Feature Demonstration Video
 
 Watch this video to see the complete **feature demonstration** of the COVID-19 Vaccine Registration System, including user registration, status checking, and notifications:
 
-[**Feature Demonstration Video**](https://www.example.com/feature-demo-video-url)
+[**Feature Demonstration Video**](https://drive.google.com/file/d/1ZR09VXlYkJpFx2OkRJdOKSuE-fL1nNFz/view?usp=sharing)
 
 ---
 
