@@ -33,11 +33,11 @@ class VaccinationReminders extends Command
 
         foreach ($vaccinations as $vaccination) {
             $user = $vaccination->user;
+            $vaccinationCenter = $vaccination->vaccinationCenter;
 
             if ($user) {
-                Log::info("Sending vaccination reminder to user {$user->id}");
                 // Send for notification
-                $user->notify(new VaccinationReminder($vaccination));
+                $user->notify(new VaccinationReminder($vaccination, $vaccinationCenter));
             }
         }
     }

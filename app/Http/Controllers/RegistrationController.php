@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
 use App\Repositories\UserRepositoryInterface;
-use App\Repositories\VaccineCenterRepositoryInterface;
+use App\Repositories\VaccinationCenterRepositoryInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -16,13 +16,13 @@ class RegistrationController extends Controller
     protected UserRepositoryInterface $userRepository;
 
     /**
-     * @var VaccineCenterRepositoryInterface
+     * @var VaccinationCenterRepositoryInterface
      */
-    protected VaccineCenterRepositoryInterface $vaccineCenterRepository;
+    protected VaccinationCenterRepositoryInterface $vaccineCenterRepository;
 
 
     public function __construct(UserRepositoryInterface $userRepository,
-                                VaccineCenterRepositoryInterface $vaccineCenterRepository
+                                VaccinationCenterRepositoryInterface $vaccineCenterRepository
     )
     {
         $this->userRepository = $userRepository;

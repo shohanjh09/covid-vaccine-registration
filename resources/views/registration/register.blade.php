@@ -29,8 +29,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="vaccine_center_id">Select Vaccine Center</label>
-                            <select name="vaccine_center_id" id="vaccine_center_id" class="form-control" required>
+                            <label for="vaccination_center_id">Select Vaccine Center</label>
+                            <select name="vaccination_center_id" id="vaccination_center_id" class="form-control" required>
                                 @foreach($vaccineCenters as $center)
                                     <option value="{{ $center->id }}">{{ $center->name }}</option>
                                 @endforeach

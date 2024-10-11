@@ -26,7 +26,7 @@ class CreateUserRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'nid' => 'required|unique:users,nid',
-            'vaccine_center_id' => 'required|exists:vaccine_centers,id',
+            'vaccination_center_id' => 'required|exists:vaccination_centers,id',
         ];
     }
 }

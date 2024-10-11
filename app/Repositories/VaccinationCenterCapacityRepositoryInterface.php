@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Models\ModelInterface;
 
-interface VaccineCenterCapacityRepositoryInterface extends Repository
+interface VaccinationCenterCapacityRepositoryInterface extends Repository
 {
     /**
      * Get vaccine center capacity by vaccine center id and date

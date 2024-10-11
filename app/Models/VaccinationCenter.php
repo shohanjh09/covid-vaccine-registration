@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class VaccineCenter extends Model
+class VaccinationCenter extends Model
 {
     const ACTIVE = 1;
 
-    protected $table = 'vaccine_centers';
+    protected $table = 'vaccination_centers';
 
     protected $primaryKey = 'id';
 

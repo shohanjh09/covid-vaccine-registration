@@ -6,7 +6,7 @@ use App\Models\ModelInterface;
 use App\Models\VaccineCenterCapacity;
 use Illuminate\Database\Eloquent\Collection;
 
-class VaccineCenterCapacityRepository implements VaccineCenterCapacityRepositoryInterface
+class VaccinationCenterCapacityRepository implements VaccinationCenterCapacityRepositoryInterface
 {
     /**
      * @var VaccineCenterCapacity
@@ -62,7 +62,7 @@ class VaccineCenterCapacityRepository implements VaccineCenterCapacityRepository
     public function getCapacityRecordByVaccineCenterIdAndDate(int $vaccineCenterId, string $date): ?ModelInterface
     {
         return $this->model
-            ->where('vaccine_center_id', $vaccineCenterId)
+            ->where('vaccination_center_id', $vaccineCenterId)
             ->whereDate('date', $date)
             ->first();
     }
@@ -73,7 +73,7 @@ class VaccineCenterCapacityRepository implements VaccineCenterCapacityRepository
     public function decrementRemainingCapacity(int $vaccineCenterId, string $date): ?ModelInterface
     {
         $capacityRecord = $this->model
-            ->where('vaccine_center_id', $vaccineCenterId)
+            ->where('vaccination_center_id', $vaccineCenterId)
             ->whereDate('date', $date)
             ->first();
 

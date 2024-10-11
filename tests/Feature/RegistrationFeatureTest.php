@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use App\Models\VaccineCenter;
+use App\Models\VaccinationCenter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RegistrationFeatureTest extends TestCase
@@ -21,13 +21,13 @@ class RegistrationFeatureTest extends TestCase
     /** @test */
     public function a_user_can_register_for_vaccination()
     {
-        $vaccineCenter = VaccineCenter::factory()->create();
+        $vaccineCenter = VaccinationCenter::factory()->create();
 
         $response = $this->post('/register', [
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'nid' => '1234567890',
-            'vaccine_center_id' => $vaccineCenter->id,
+            'vaccination_center_id' => $vaccineCenter->id,
         ]);
 
         $response->assertRedirect('/search?nid=1234567890');

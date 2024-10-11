@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\VaccinationRepositoryInterface;
-use App\Repositories\VaccineCenterCapacityRepositoryInterface;
-use App\Repositories\VaccineCenterRepositoryInterface;
+use App\Repositories\VaccinationCenterCapacityRepositoryInterface;
+use App\Repositories\VaccinationCenterRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Log;
 class VaccinationService implements VaccinationServiceInterface
 {
     /**
-     * @var VaccineCenterCapacityRepositoryInterface
+     * @var VaccinationCenterCapacityRepositoryInterface
      */
-    protected VaccineCenterCapacityRepositoryInterface $vaccineCenterCapacityRepository;
+    protected VaccinationCenterCapacityRepositoryInterface $vaccineCenterCapacityRepository;
 
     /**
      * @var UserRepositoryInterface
@@ -28,15 +28,15 @@ class VaccinationService implements VaccinationServiceInterface
     protected VaccinationRepositoryInterface $vaccinationRepository;
 
     /**
-     * @var VaccineCenterRepositoryInterface
+     * @var VaccinationCenterRepositoryInterface
      */
-    protected VaccineCenterRepositoryInterface $vaccineCenterRepository;
+    protected VaccinationCenterRepositoryInterface $vaccineCenterRepository;
 
     public function __construct(
         UserRepositoryInterface                  $userRepository,
         VaccinationRepositoryInterface           $vaccinationRepository,
-        VaccineCenterRepositoryInterface         $vaccineCenterRepository,
-        VaccineCenterCapacityRepositoryInterface $vaccineCenterCapacityRepository
+        VaccinationCenterRepositoryInterface     $vaccineCenterRepository,
+        VaccinationCenterCapacityRepositoryInterface $vaccineCenterCapacityRepository
     )
     {
         $this->userRepository = $userRepository;
@@ -81,7 +81,7 @@ class VaccinationService implements VaccinationServiceInterface
                 $user = $this->userRepository->get($userId);
 
                 // Find the next available date
-                $nextAvailableDate = $this->findNextAvailableDate($user->vaccine_center_id);
+                $nextAvailableDate = $this->findNextAvailableDate($user->vaccination_center_id);
 
                 $this->vaccinationRepository->create([
                     'user_id' => $user->id,
@@ -89,7 +89,7 @@ class VaccinationService implements VaccinationServiceInterface
                 ]);
 
                 // Reduce the capacity for that day
-                $this->vaccineCenterCapacityRepository->decrementRemainingCapacity($user->vaccine_center_id, $nextAvailableDate);
+                $this->vaccineCenterCapacityRepository->decrementRemainingCapacity($user->vaccination_center_id, $nextAvailableDate);
             });
         } catch (\Exception $e) {
             // Log or handle the error
@@ -120,7 +120,7 @@ class VaccinationService implements VaccinationServiceInterface
                     $center = $this->vaccineCenterRepository->get($vaccineCenterId);
 
                     $capacityRecord = $this->vaccineCenterCapacityRepository->create([
-                        'vaccine_center_id' => $vaccineCenterId,
+                        'vaccination_center_id' => $vaccineCenterId,
                         'date' => $date->toDateString(),
                         'remaining_capacity' => $center->daily_capacity
                     ]);

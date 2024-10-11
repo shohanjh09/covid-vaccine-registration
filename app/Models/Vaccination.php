@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Vaccination extends Model
@@ -18,9 +17,8 @@ class Vaccination extends Model
      */
     protected $fillable = [
         'user_id',
-        'vaccine_center_id',
+        'vaccination_center_id',
         'scheduled_date',
-        'vaccinated',
     ];
 
     /**
@@ -32,10 +30,10 @@ class Vaccination extends Model
     }
 
     /**
-     * Relationship: A vaccination belongs to a vaccine center.
+     * Relationship: A vaccination belongs to a vaccination center.
      */
-    public function vaccineCenter() : BelongsTo
+    public function vaccinationCenter() : BelongsTo
     {
-        return $this->belongsTo(VaccineCenter::class);
+        return $this->belongsTo(VaccinationCenter::class, 'vaccination_center_id');
     }
 }

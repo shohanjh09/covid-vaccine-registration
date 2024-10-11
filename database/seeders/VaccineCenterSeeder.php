@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\VaccineCenter;
+use App\Models\VaccinationCenter;
 use Illuminate\Database\Seeder;
 
 class VaccineCenterSeeder extends Seeder
@@ -12,8 +12,7 @@ class VaccineCenterSeeder extends Seeder
      */
     public function run(): void
     {
-        // Use insert() for multiple records
-        VaccineCenter::insert([
+        VaccinationCenter::insert([
             ['name' => 'Bangladesh Kuwait Moitree Hospital', 'location' => 'Dhaka', 'daily_capacity' => 100],
             ['name' => 'Railway Hospital', 'location' => 'Dhaka', 'daily_capacity' => 150],
             ['name' => 'Mohanagar General Hospital', 'location' => 'Dhaka', 'daily_capacity' => 120],

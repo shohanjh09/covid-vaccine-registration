@@ -23,7 +23,7 @@ class User extends Model
         'name',
         'email',
         'nid',
-        'vaccine_center_id',
+        'vaccination_center_id',
     ];
 
     /**
@@ -39,6 +39,6 @@ class User extends Model
      */
     public function vaccineCenter(): BelongsTo
     {
-        return $this->belongsTo(VaccineCenter::class);
+        return $this->belongsTo(VaccinationCenter::class, 'vaccination_center_id');
     }
 }

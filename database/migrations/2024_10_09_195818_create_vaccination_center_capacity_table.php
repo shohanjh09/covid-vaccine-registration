@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vaccine_center_capacity', function (Blueprint $table) {
+        Schema::create('vaccination_center_capacity', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('vaccine_center_id')->constrained()->onDelete('cascade');
-            $table->date('date');  // The date for which capacity is being tracked
-            $table->integer('remaining_capacity'); // Remaining slots for that day
+            $table->foreignId('vaccination_center_id')->constrained()->onDelete('cascade');
+            $table->date('date');
+            $table->integer('remaining_capacity');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vaccine_center_capacity');
+        Schema::dropIfExists('vaccination_center_capacity');
     }
 };

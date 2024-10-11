@@ -3,17 +3,17 @@
 namespace App\Repositories;
 
 use App\Models\ModelInterface;
-use App\Models\VaccineCenter;
+use App\Models\VaccinationCenter;
 use Illuminate\Database\Eloquent\Collection;
 
-class VaccineCenterRepository implements VaccineCenterRepositoryInterface
+class VaccinationCenterRepository implements VaccinationCenterRepositoryInterface
 {
     /**
-     * @var VaccineCenter
+     * @var VaccinationCenter
      */
-    protected VaccineCenter $model;
+    protected VaccinationCenter $model;
 
-    public function __construct(VaccineCenter $model) {
+    public function __construct(VaccinationCenter $model) {
         $this->model = $model;
     }
 
@@ -62,7 +62,7 @@ class VaccineCenterRepository implements VaccineCenterRepositoryInterface
     public function getActiveVaccineCenters() : Collection
     {
         return $this->model
-            ->where('active', VaccineCenter::ACTIVE)
+            ->where('active', VaccinationCenter::ACTIVE)
             ->orderBy('name', 'asc')
             ->get();
     }
